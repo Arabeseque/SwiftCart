@@ -13,86 +13,101 @@
 <template>
   <div class="cart-container">
     <h2>购物车</h2>
-    <!-- NOTE:使用 v-memo 缓存静态列表，避免不必要的重渲染 -->
-    <ul >
-      <li v-for="item in cart.items" :key="item.id">
+    <!-- 使用 v-memo 缓存静态列表，避免不必要的重渲染 -->
+    <ul>
+      <li 
+        v-for="item in cart.items" 
+        :key="item.id"
+        v-memo="[item.id, item.name, item.price, item.quantity]"
+      >
         <span>{{ item.name }} - ¥{{ item.price }} x {{ item.quantity }}</span>
-        <button @click="handleRemove(item.id)">删除</button>
-        <!-- 错误写法示例：直接在模板中调用 store 方法可能导致多次渲染 -->
-        <!-- 正确：使用封装的方法更新数量 -->
-        <input 
-          type="number" 
-          v-model.number="quantities[item.id]" 
-          @change="throttledUpdate(item.id)" 
-          min="1"
-        >
+        <div class="item-controls">
+          <button @click="handleRemove(item.id)" class="remove-btn">
+            删除
+          </button>
+          <!-- 
+            错误写法示例：直接在模板中调用 store 方法
+            @input="cart.updateItem(item.id, $event.target.value)" 
+          -->
+          <input 
+            type="number" 
+            v-model.number="quantities[item.id]" 
+            @change="throttledUpdate(item.id)" 
+            min="1"
+            class="quantity-input"
+          >
+        </div>
       </li>
     </ul>
-    <div>
-      <strong>总计: ¥{{ totalPrice }}</strong>
+    <!-- 使用计算属性缓存总价，避免频繁计算 -->
+    <div class="cart-summary">
+      <strong>总计: ¥{{ cart.total }}</strong>
+      <button @click="handleClear" class="clear-btn">清空购物车</button>
     </div>
-    <button @click="handleClear">清空购物车</button>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { useCartStore } from '../stores/cart';
 import throttle from 'lodash/throttle';
+import * as Sentry from "@sentry/vue";
 
 /**
  * 组件功能：
  * - 展示购物车中的商品列表
  * - 支持删除、修改数量、清空购物车操作
- * - 利用 computed 计算总价，并通过节流处理优化数量更新
+ * - 使用 v-memo 优化列表渲染性能
  * 
  * [CONCEPT]: 组合式 API 实现状态同步
- * [PATTERN]: 单一职责原则，组件专注展示逻辑，Store 负责数据管理
+ * [PATTERN]: 单一职责原则，组件专注展示逻辑
+ * [PERF]: 使用 v-memo 和 throttle 优化性能
  */
 const cart = useCartStore();
 
-// 初始化每个商品对应的数量，用于双向绑定（避免直接修改 store 数据的错误写法示例）
+// 初始化每个商品对应的数量，用于双向绑定
 const quantities = ref({});
+
 // 同步购物车中每个商品的数量
 const initializeQuantities = () => {
-  cart.items.forEach(item => {
-    console.log('初始化商品数量', item.id, item.quantity);
-    quantities.value[item.id] = item.quantity;
-  });
+  try {
+    cart.items.forEach(item => {
+      quantities.value[item.id] = item.quantity;
+    });
+  } catch (error) {
+    Sentry.captureException(error);
+    console.error('初始化数量失败:', error);
+  }
 };
+
 // 初始化时同步，防止输入框未绑定
 initializeQuantities();
 
-// NOTE:监听购物车变化，保持 quantities 同步（防止错误写法：不更新临时数据导致界面数据错乱）
+// 监听购物车变化，保持 quantities 同步
 watch(
   () => cart.items,
   () => {
-    console.log('购物车变化，同步商品数量');
     initializeQuantities();
   },
   { deep: true }
 );
-
-// 计算购物车总价
-const totalPrice = computed(() => {
-  return cart.items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-});
 
 /**
  * 更新商品数量
  * 使用节流函数 throttledUpdate 防止短时间内频繁调用
  */
 const updateQuantity = (id) => {
-  const newQuantity = quantities.value[id];
-  //检查数量合法性，防止因错误输入导致 store 状态异常
-  if (newQuantity < 1) {
-    console.warn("WARNING: 数量必须大于0。");
-    // 错误写法示例：直接修改 store 数据，可能导致状态不一致
-    quantities.value[id] = 1;
-    return;
+  try {
+    const newQuantity = quantities.value[id];
+    if (newQuantity < 1) {
+      quantities.value[id] = 1;
+      return;
+    }
+    cart.updateItem(id, newQuantity);
+  } catch (error) {
+    Sentry.captureException(error);
+    console.error('更新数量失败:', error);
   }
-  // NOTE: 更新到 store 中
-  cart.updateItem(id, newQuantity);
 };
 
 // 节流包装更新操作，避免高频触发
@@ -102,17 +117,26 @@ const throttledUpdate = throttle((id) => {
 
 /**
  * 处理删除操作
- * 错误写法示例：直接内联复杂逻辑至模板，容易引起渲染重复
  */
 const handleRemove = (id) => {
-  cart.removeItem(id);
+  try {
+    cart.removeItem(id);
+  } catch (error) {
+    Sentry.captureException(error);
+    console.error('删除商品失败:', error);
+  }
 };
 
 /**
  * 清空购物车
  */
 const handleClear = () => {
-  cart.clearCart();
+  try {
+    cart.clearCart();
+  } catch (error) {
+    Sentry.captureException(error);
+    console.error('清空购物车失败:', error);
+  }
 };
 </script>
 
@@ -120,18 +144,58 @@ const handleClear = () => {
 .cart-container {
   padding: 16px;
   border: 1px solid #ddd;
+  border-radius: 4px;
+  max-width: 800px;
+  margin: 0 auto;
 }
+
 .cart-container ul {
   list-style-type: none;
   padding: 0;
 }
+
 .cart-container li {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
 }
-.cart-container button {
-  margin-left: 8px;
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quantity-input {
+  width: 60px;
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.remove-btn, .clear-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ff4d4f;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.remove-btn:hover, .clear-btn:hover {
+  background-color: #ff7875;
+}
+
+.cart-summary {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

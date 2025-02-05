@@ -5,6 +5,9 @@
     <CartList />
     <!-- 示例：点击按钮添加一件示例商品 -->
     <button @click="addSampleItem">添加示例商品</button>
+
+    <!-- TODO: 测试 Sentry  -->
+    <button @click="testSentry">测试 Sentry</button>
   </div>
 </template>
 
@@ -27,6 +30,12 @@ const addSampleItem = () => {
     quantity: 1
   };
   cart.addItem(sampleItem);
+};
+
+const testSentry = () => {
+  // 触发一个错误，用于测试 Sentry
+  myUndefinedFunction();
+  throw new Error('测试 Sentry');
 };
 </script>
 
