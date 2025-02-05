@@ -1,18 +1,28 @@
 <template>
   <div id="app">
     <h1>电商购物车 Demo</h1>
-    <!-- 引入购物车展示组件 -->
-    <CartList />
-    <!-- 示例：点击按钮添加一件示例商品 -->
-    <button @click="addSampleItem">添加示例商品</button>
-
-    <!-- TODO: 测试 Sentry  -->
-    <button @click="testSentry">测试 Sentry</button>
+    
+    <div class="container">
+      <div class="cart-section">
+        <!-- 购物车列表 -->
+        <CartList />
+        <div class="actions">
+          <button @click="addSampleItem" class="btn primary">添加示例商品</button>
+          <button @click="testSentry" class="btn">测试 Sentry</button>
+        </div>
+      </div>
+      
+      <!-- 数据可视化区域 -->
+      <div class="chart-section">
+        <CartChart v-if="cart.items.length > 0" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import CartList from './components/CartList.vue';
+import CartChart from './components/CartChart.vue';
 import { useCartStore } from './stores/cart';
 
 const cart = useCartStore();
@@ -44,9 +54,46 @@ const testSentry = () => {
   font-family: Arial, sans-serif;
   padding: 20px;
 }
-button {
-  margin-top: 20px;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cart-section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chart-section {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-height: 400px;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn {
   padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   cursor: pointer;
+}
+
+.btn.primary {
+  background: #4CAF50;
+  color: white;
+  border: none;
 }
 </style>
