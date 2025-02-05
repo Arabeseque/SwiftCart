@@ -12,19 +12,6 @@
 import CartList from './components/CartList.vue';
 import { useCartStore } from './stores/cart';
 
-/**
- * 组件功能：
- * - App.vue 作为应用入口，集成购物车组件，并提供添加示例商品的操作。
- * - 通过 Pinia 管理购物车状态，保证随页面刷新数据可持久化存储。
- *
- * 示例用法：
- * <App />
- *
- * [CONCEPT]: 利用组合式 API 实现状态管理与视图展示分离。
- * [PATTERN]: 单一职责原则，组件只负责视图逻辑，Store 负责数据管理。
- */
-
-// 获取购物车 store 实例
 const cart = useCartStore();
 
 /**
