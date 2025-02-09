@@ -2,7 +2,7 @@
   <div class="app">
     <!-- 顶部导航 -->
     <nav class="nav">
-      <div class="logo">简洁电商</div>
+      <div class="logo">SwiftCart</div>
       <div class="search">
         <input 
           type="text" 
@@ -30,7 +30,7 @@
     </Suspense>
 
     <!-- 商品详情弹窗 -->
-    <ModalManager ref="modalManager">
+    <ModalManager ref="modalManager" v-model:visible="isProductModalVisible">
       <template v-if="selectedProduct">
         <div class="product-detail">
           <div class="product-image-wrapper">

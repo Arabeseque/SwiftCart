@@ -1,0 +1,227 @@
+/* Material Design 3 主题变量 - 明亮主题 */
+:root {
+  /* Primary Colors */
+  --md-sys-color-primary: 103, 80, 164;
+  --md-sys-color-on-primary: 255, 255, 255;
+  --md-sys-color-primary-container: 234, 221, 255;
+  --md-sys-color-on-primary-container: 33, 0, 94;
+  
+  /* Secondary Colors */
+  --md-sys-color-secondary: 98, 91, 113;
+  --md-sys-color-on-secondary: 255, 255, 255;
+  --md-sys-color-secondary-container: 232, 222, 248;
+  --md-sys-color-on-secondary-container: 29, 25, 43;
+  
+  /* Tertiary Colors */
+  --md-sys-color-tertiary: 125, 82, 96;
+  --md-sys-color-on-tertiary: 255, 255, 255;
+  --md-sys-color-tertiary-container: 255, 216, 228;
+  --md-sys-color-on-tertiary-container: 49, 17, 29;
+  
+  /* Surface Colors */
+  --md-sys-color-surface: 255, 251, 254;
+  --md-sys-color-on-surface: 28, 27, 31;
+  --md-sys-color-surface-variant: 231, 224, 236;
+  --md-sys-color-on-surface-variant: 73, 69, 79;
+  
+  /* Surface Container Colors */
+  --md-sys-color-surface-container-lowest: 255, 255, 255;
+  --md-sys-color-surface-container-low: 247, 242, 250;
+  --md-sys-color-surface-container: 243, 237, 247;
+  --md-sys-color-surface-container-high: 236, 230, 240;
+  --md-sys-color-surface-container-highest: 230, 224, 233;
+  
+  /* Background Colors */
+  --md-sys-color-background: 255, 251, 254;
+  --md-sys-color-on-background: 28, 27, 31;
+  
+  /* Error Colors */
+  --md-sys-color-error: 179, 38, 30;
+  --md-sys-color-on-error: 255, 255, 255;
+  --md-sys-color-error-container: 249, 222, 220;
+  --md-sys-color-on-error-container: 65, 14, 11;
+  
+  /* Outline Colors */
+  --md-sys-color-outline: 121, 116, 126;
+  --md-sys-color-outline-variant: 196, 191, 201;
+  
+  /* States */
+  --md-sys-state-hover-state-layer-opacity: 0.08;
+  --md-sys-state-focus-state-layer-opacity: 0.12;
+  --md-sys-state-pressed-state-layer-opacity: 0.12;
+  --md-sys-state-dragged-state-layer-opacity: 0.16;
+  
+  /* Elevation Values */
+  --md-sys-elevation-level1: 0px 1px 2px rgba(0,0,0,0.3),
+                            0px 1px 3px 1px rgba(0,0,0,0.15);
+  --md-sys-elevation-level2: 0px 2px 6px rgba(0,0,0,0.15),
+                            0px 1px 2px rgba(0,0,0,0.3);
+  --md-sys-elevation-level3: 0px 4px 8px 3px rgba(0,0,0,0.15),
+                            0px 1px 3px rgba(0,0,0,0.3);
+  --md-sys-elevation-level4: 0px 6px 10px 4px rgba(0,0,0,0.15),
+                            0px 2px 3px rgba(0,0,0,0.3);
+  --md-sys-elevation-level5: 0px 8px 12px 6px rgba(0,0,0,0.15),
+                            0px 4px 4px rgba(0,0,0,0.3);
+
+  /* Motion */
+  --md-sys-motion-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-duration-short1: 100ms;
+  --md-sys-motion-duration-short2: 200ms;
+  --md-sys-motion-duration-medium1: 250ms;
+  --md-sys-motion-duration-medium2: 300ms;
+  --md-sys-motion-duration-long1: 350ms;
+  --md-sys-motion-duration-long2: 400ms;
+}
+
+/* 基础样式设置 */
+body {
+  font-family: 'Roboto', system-ui, -apple-system, sans-serif;
+  color: rgb(var(--md-sys-color-on-surface));
+  background-color: rgb(var(--md-sys-color-background));
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+/* Material Design Elevation Classes */
+.md-elevation-1 {
+  box-shadow: var(--md-sys-elevation-level1);
+}
+
+.md-elevation-2 {
+  box-shadow: var(--md-sys-elevation-level2);
+}
+
+.md-elevation-3 {
+  box-shadow: var(--md-sys-elevation-level3);
+}
+
+.md-elevation-4 {
+  box-shadow: var(--md-sys-elevation-level4);
+}
+
+.md-elevation-5 {
+  box-shadow: var(--md-sys-elevation-level5);
+}
+
+/* Material Design Motion */
+.md-motion-standard {
+  transition-timing-function: var(--md-sys-motion-easing-standard);
+}
+
+.md-motion-emphasized {
+  transition-timing-function: var(--md-sys-motion-easing-emphasized);
+}
+
+/* Material Design State Layer */
+.md-state-layer {
+  position: relative;
+  isolation: isolate;
+}
+
+.md-state-layer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: currentColor;
+  opacity: 0;
+  transition: opacity var(--md-sys-motion-duration-short2) var(--md-sys-motion-easing-standard);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.md-state-layer:hover::before {
+  opacity: var(--md-sys-state-hover-state-layer-opacity);
+}
+
+.md-state-layer:focus-visible::before {
+  opacity: var(--md-sys-state-focus-state-layer-opacity);
+}
+
+.md-state-layer:active::before {
+  opacity: var(--md-sys-state-pressed-state-layer-opacity);
+}
+
+/* Accessibility */
+:focus-visible {
+  outline: 2px solid rgb(var(--md-sys-color-primary));
+  outline-offset: 2px;
+}
+
+/* Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 响应式布局基础类 */
+.md-layout-grid {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.md-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Material Design 文字排版 */
+.md-typography-display-large {
+  font-size: 57px;
+  line-height: 64px;
+  letter-spacing: -0.25px;
+}
+
+.md-typography-display-medium {
+  font-size: 45px;
+  line-height: 52px;
+}
+
+.md-typography-display-small {
+  font-size: 36px;
+  line-height: 44px;
+}
+
+.md-typography-headline-large {
+  font-size: 32px;
+  line-height: 40px;
+}
+
+.md-typography-headline-medium {
+  font-size: 28px;
+  line-height: 36px;
+}
+
+.md-typography-headline-small {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.md-typography-body-large {
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.5px;
+}
+
+.md-typography-body-medium {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+}
+
+.md-typography-body-small {
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+}

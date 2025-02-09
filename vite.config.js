@@ -1,6 +1,7 @@
 import { sentryVitePlugin } from "@sentry/vite-plugin";
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import UnoCSS from 'unocss/vite'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 /**
@@ -10,6 +11,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
  */
 export default defineConfig({
   plugins: [
+    UnoCSS(),
     vue(),
     // Sentry 错误监控插件
     sentryVitePlugin({
@@ -29,7 +31,12 @@ export default defineConfig({
     sourcemap: true,
     // 构建目标环境
     target: 'esnext',
-    // 代码压缩配置
+    // Material Web Components 配置
+    rollupOptions: {
+      // 确保正确处理 lit 和 Material Web Components
+      external: [/^@material\/web\//]
+    },
+    // NOTE:L 性能优化 代码压缩配置
     minify: 'terser',
     terserOptions: {
       compress: {
@@ -38,19 +45,7 @@ export default defineConfig({
         drop_debugger: true
       }
     },
-    // 代码分割策略
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // 将 echarts 单独打包
-          'echarts': ['echarts'],
-          // 将 Vue 相关依赖打包在一起
-          'vue-vendor': ['vue', 'pinia'],
-          // 将加密相关代码打包在一起
-          'crypto': ['crypto-js']
-        }
-      }
-    },
+
     // 静态资源处理
     assetsDir: 'assets',
     // chunks 大小警告限制，默认 500kb
@@ -76,7 +71,7 @@ export default defineConfig({
 
   // 性能优化配置
   optimizeDeps: {
-    // 预构建依赖项
+    // NOTE: 预构建依赖项
     include: ['echarts', 'lodash'],
     // 排除不需要预构建的依赖
     exclude: []

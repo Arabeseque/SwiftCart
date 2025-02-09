@@ -1,25 +1,36 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import * as Sentry from "@sentry/vue"
-import { BrowserTracing } from "@sentry/tracing"
 import App from './App.vue'
 
+// 导入 Material Icons
+import '@material/web/icon/icon'
+import '@material/web/iconbutton/icon-button'
+
+// 导入 UnoCSS 样式
+import 'uno.css'
+// 导入 Material Design 基础样式
+import './styles/material.css'
+
+// 创建应用实例
 const app = createApp(App)
+
+// 使用 Pinia 状态管理
 const pinia = createPinia()
-
-// [CONCEPT] 错误监控配置
-// WARNING: 在生产环境中需要配置正确的DSN
-Sentry.init({
-  app,
-  // NOTE: 在这里填写 Sentry 的地址
-  dsn: import.meta.env.VITE_SENTRY_DSN || "https://ae0c49f9b033a43dcb85e6b2029d7df0@o4508765522165760.ingest.us.sentry.io/4508765589667840",
-
-
-});
-
-// 使用持久化插件
-pinia.use(piniaPluginPersistedstate)
 app.use(pinia)
-app.mount('#app')
 
+// 设置全局错误处理
+app.config.errorHandler = (err, vm, info) => {
+  console.error('全局错误:', err)
+  console.error('错误信息:', info)
+}
+
+// 注册全局属性
+app.config.globalProperties.$material = {
+  // Material Design 工具函数
+  elevation: (level) => `md-elevation-${level}`,
+  typography: (style) => `md-typography-${style}`,
+  color: (name) => `rgb(var(--md-sys-color-${name}))`
+}
+
+// 挂载应用
+app.mount('#app')

@@ -9,20 +9,25 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@material/web": "^2.2.0",
     "@sentry/tracing": "^7.120.3",
     "@sentry/vite-plugin": "^3.1.2",
     "@sentry/vue": "^8.54.0",
+    "@unocss/preset-mini": "^65.4.3",
     "crypto-js": "^4.2.0",
     "echarts": "^5.5.0",
+    "lit": "^3.2.1",
     "lodash": "^4.17.21",
     "pinia": "^2.3.1",
     "pinia-plugin-persistedstate": "^4.2.0",
     "vue": "^3.5.13"
   },
   "devDependencies": {
+    "@unocss/preset-uno": "^65.4.3",
     "@vitejs/plugin-vue": "^5.2.1",
     "rollup-plugin-visualizer": "^5.14.0",
     "terser": "^5.37.0",
+    "unocss": "^65.4.3",
     "vite": "^6.0.5"
   }
 }
